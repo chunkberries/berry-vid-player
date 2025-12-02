@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Minimal Video Player with Upload</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #video {
+    width: 100vw;
+    height: 100vh;
+    background: black;
+  }
+  #uploadContainer {
+    position: absolute;
+    top: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 8px;
+  }
+  input[type="file"] {
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="uploadContainer">
+  <input type="file" accept="video/*" id="videoUpload" />
+</div>
+
+<video id="video" controlsList="nodownload" autoplay></video>
+
+<script>
+  const video = document.getElementById('video');
+  const uploadInput = document.getElementById('videoUpload');
+
+uploadInput.addEventListener('change', () => {
+  const file = uploadInput.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    video.src = url;
+    video.play();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  switch(e.code) {
+    case 'Space':
+      e.preventDefault();
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+      break;
+    case 'ArrowLeft':
+      video.currentTime = Math.max(0, video.currentTime - 10);
+      break;
+    case 'ArrowRight':
+      video.currentTime = Math.min(video.duration, video.currentTime + 10);
+      break;
+    case 'ArrowUp':
+      video.volume = Math.min(1, video.volume + 0.1);
+      break;
+    case 'ArrowDown':
+      video.volume = Math.max(0, video.volume - 0.1);
+      break;
+    case 'KeyF':
+      if (!document.fullscreenElement) {
+        video.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+      break;
+  }
+});
+</script>
+
+</body>
+</html>
